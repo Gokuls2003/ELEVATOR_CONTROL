@@ -1,90 +1,22 @@
-`timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 02.02.2024 10:05:44
-// Design Name: 
-// Module Name: Elevator_Control
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
+module Elevator_Control(
+    input wire clk,
+    input wire reset,
+    input wire [5:0] floor_request, // Change to 6-bit input for 40 floors
+    output reg [5:0] current_floor // Change to 6-bit output for 40 floors
+);
 
-
-module Elevator_Control(clk,reset,req_floor,stop,door,Up,Down,y);
-
-input clk,reset;
-
-input [6:0] req_floor;
-output reg[1:0] door;
-output reg[1:0] Up;
-output reg[1:0] Down;
-output reg[1:0] stop;
-
-output [6:0] y;
-reg [6:0] cf ;
-
-always @ (posedge clk)
-begin
-
-if(reset)
-begin
-cf=6'd0;
-stop=6'd1;
-door = 1'd1;
-Up=1'd0;
-Down=1'd0;
+// Add logic for elevator control
+always @(posedge clk or posedge reset) begin
+    if (reset) begin
+        current_floor <= 6'd0; // Initialize to ground floor
+    end else begin
+        if (floor_request == 6'd20) begin
+            current_floor <= 6'd20; // Stop at 20th floor
+        end else begin
+            // Logic to move the elevator to the requested floor
+            current_floor <= floor_request;
+        end
+    end
 end
-else
-begin
-if(req_floor < 6'd61)
-begin
-
-if(req_floor < cf )
-begin
-cf=cf-1;
-door=1'd0;
-stop=6'd0;
-Up=1'd0;
-Down=1'd1;
-end
-
-
-else if (req_floor > cf)
-begin
-cf = cf+1;
-door=1'd0;
-stop=6'd0;
-Up=1'd1;
-Down=1'd0;
-end
-
-else if(req_floor == cf )
-begin
-cf = req_floor;
-door=1'd1;
-stop=6'd1;
-Up=1'd0;
-Down=1'd0;
-end
-end
-
-
-end
-
-
-end
-
-
-assign y = cf;
 
 endmodule
